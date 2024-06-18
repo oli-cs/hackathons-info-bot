@@ -1,0 +1,17 @@
+{
+  "name": "hackathons-info-bot",
+  "version": "1.0.0",
+  "description": "A discord bot for scraping Hackathons UK and Major League Hacking",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.15.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.5.0"
+  }
+}
