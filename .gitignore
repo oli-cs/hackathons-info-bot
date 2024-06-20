@@ -1,3 +1,7 @@
 .vscode
-config.json
 .env
+/bin
+/lib
+/include
+pyvenv.cfg
+*.txt
