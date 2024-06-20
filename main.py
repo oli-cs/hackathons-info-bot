@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-from datetime import date
 import discord
 import os
 from dotenv import load_dotenv
@@ -45,8 +44,12 @@ def getHacksArr(information:str) -> list:
             name =  info.split("In-Person")[0]
             strContainingDate = info.split("In-Person")[1]
         except:
-            name =  info.split("Hybrid")[0]
-            strContainingDate = info.split("Hybrid")[1]
+            try:
+                name =  info.split("Hybrid")[0]
+                strContainingDate = info.split("Hybrid")[1]
+            except:
+                name =  info.split("Online")[0]
+                strContainingDate = info.split("Online")[1]
 
         infoDict["name"] = name
         for expression in searchExpsDate:
@@ -59,10 +62,15 @@ def getHacksArr(information:str) -> list:
 
     return hackathons
 
+def getMoreInfo(year:int) -> str:
+    return "See https://www.hackathons.org.uk/events/{year} for more information".format(year = str(year))
+
 def formatOutput(data:list,year:int) -> str:
-    outputStr = "Here's a list of hackathons sponsored by Hackathons UK for the {year} season: \n".format(year)
+    outputStr = "Here's a list of hackathons sponsored by Hackathons UK for the {year} season: \n".format(year = str(year))
     for row in data:
-        outputStr += "- {name}, {date} \n".format(row["name"],row["date"])
+        outputStr += "- {name}, {date} \n".format(name = row["name"], date = row["date"])
+
+    outputStr += getMoreInfo(year)
 
     return outputStr
 
@@ -76,6 +84,9 @@ async def hi(sourceChannel:discord.ApplicationContext):
 
 @hackBot.slash_command(name="hacks",desciption="returns scraped text from hackathons uk webpage")#works, but need to add explicit permission for channel
 async def hacks(sourceChannel:discord.ApplicationContext,year:int):
-    await sourceChannel.respond(formatOutput(getHacksArr(scrapeHackathonsUk(year)),year))
+    try:
+        await sourceChannel.respond(formatOutput(getHacksArr(scrapeHackathonsUk(year)),year))
+    except:
+        await sourceChannel.respond("Something went wrong\n" + getMoreInfo(year))
 
 hackBot.run(os.getenv("TOKEN"))
